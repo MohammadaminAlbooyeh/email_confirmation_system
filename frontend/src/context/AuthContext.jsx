@@ -27,9 +27,14 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const login = (token, userData) => {
+  const login = async (token, userData) => {
     localStorage.setItem('access_token', token);
-    setUser(userData);
+    try {
+      const response = await api.get('/user/profile');
+      setUser(response.data);
+    } catch (error) {
+      setUser(userData);
+    }
   };
 
   const logout = () => {

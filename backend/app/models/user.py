@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import relationship
@@ -14,7 +14,11 @@ class User(Base):
     password_hash = Column(String)
     full_name = Column(String, nullable=True)
     confirmed_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at = Column(
+        DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc)
+    )
 
     tokens = relationship("ConfirmationToken", back_populates="user")
